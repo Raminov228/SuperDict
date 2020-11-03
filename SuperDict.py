@@ -47,9 +47,9 @@ class SuperDict():
 				object.__setattr__(self, key, self.parse_list(dict_data[key]))
 			
 			else:
-				# создаем аттрибут 
+				# создаем аттрибут
 				object.__setattr__(self, key, dict_data[key])
-
+                    
 	def parse_list(self, lst):
 		'''
 		Здесь парсим список 
@@ -61,12 +61,12 @@ class SuperDict():
 		
 		for elem in lst:	
 			# если попался словарь, то делаем из него SuperDict()
-			if type(elem) == type(elem):
+			if type(elem) == type(dict()):
 				parsed_lst.append(SuperDict(elem))
 
 			# если попался список, то парсим его 
-			elif type(elem) == type(elem):
-				parsed_lst.append(self.parse(elem))
+			elif type(elem) == type([]):
+				parsed_lst.append(self.parse_list(elem))
 
 			#иначе оставляем без изменений
 			else:
@@ -81,7 +81,7 @@ class SuperDict():
 		@ in  : key
 		@ out : dict[key]
 		'''
-    	return object.__getattribute__(self, key)
+		return object.__getattribute__(self, key)
 
 
 with open("test.json", "r") as read_file:
@@ -98,6 +98,12 @@ print(person.children[1].firstName)
 print(person['children'][1]['firstName'])
 
 
+#with open("table.json", "r") as read_file:
+#    data = json.load(read_file)
+
+#table = SuperDict(data)
+
+#print(table.criticality[0].count)
 
 '''
 TODO:
