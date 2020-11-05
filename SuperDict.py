@@ -1,33 +1,13 @@
 #---------------------------------#
 # Аминов Ренат, СуперСловарь      #
 #                                 #
-# 2ое Ноября 2020                 #
+# 5ое Ноября 2020                 #
 #                                 #
-# v 0.0.1                         #
+# v 0.0.3                         #
 #---------------------------------#
-
-''' Вот как выглядит test.json
-{
-    "firstName": "Jane",
-    "lastName": "Doe",
-    "hobbies": ["running", "sky diving", "singing"],
-    "age": 35,
-    "children": [
-        {
-            "firstName": "Alice",
-            "age": 6
-        },
-        {
-            "firstName": "Bob",
-            "age": 8
-        }
-    ]
-}
-'''
 import json
 
 
-'''tip: название вдохновлено группой СУПЕРКОЗЛЫ'''
 class SuperDict():
 	def __init__(self, dict_data):
 		''' 
@@ -37,19 +17,21 @@ class SuperDict():
 		@ in  : dict
 		@ out : SuperDict object
 		'''
+		self.data = dict_data
+
 		for key in dict_data:
-			if type(dict_data[key]) == type(dict_data):
+			if isinstance(dict_data[key], type(dict_data)):
 				#если нам попался словарь, то его надо превратить в SuperDict 
 				object.__setattr__(self, key, SuperDict(dict_data[key]))
-			
-			elif type(dict_data[key]) == type([]):
+				
+			elif isinstance(dict_data[key], type([])):
 				# если нам попался список, то надо его "запарсить"
 				object.__setattr__(self, key, self.parse_list(dict_data[key]))
 			
 			else:
 				# создаем аттрибут
-				object.__setattr__(self, key, dict_data[key])
-                    
+				object.__setattr__(self, key, dict_data[key])		
+		
 	def parse_list(self, lst):
 		'''
 		Здесь парсим список 
@@ -61,11 +43,11 @@ class SuperDict():
 		
 		for elem in lst:	
 			# если попался словарь, то делаем из него SuperDict()
-			if type(elem) == type(dict()):
+			if isinstance(elem, type(dict())):
 				parsed_lst.append(SuperDict(elem))
 
 			# если попался список, то парсим его 
-			elif type(elem) == type([]):
+			elif isinstance(elem, type([])):
 				parsed_lst.append(self.parse_list(elem))
 
 			#иначе оставляем без изменений
@@ -83,32 +65,46 @@ class SuperDict():
 		'''
 		return object.__getattribute__(self, key)
 
+	def __str__(self):
+		return str(self.data)
 
-with open("test.json", "r") as read_file:
-    data = json.load(read_file)
+	def clear(self):
+		self.data.clear()
+		self = SuperDict(self.data)
 
-person = SuperDict(data)
+	def copy(self):
+		return SuperDict(self.data.copy())
 
-#можно обращаться по разному
-print(person.hobbies)
-print(person['hobbies'])
+	def get(self, key, deafult=None):
+		return self.data.get(key, deafult)
 
-#можно делать неограниченное количество вложений
-print(person.children[1].firstName)
-print(person['children'][1]['firstName'])
+	def items(self):
+		return self.data.items()
+
+	def keys(self):
+		return self.data.keys()
+	
+	def update(self, other):
+		self.data.update(other)
+		self = SuperDict(self.data)
+
+	def pop(self, key, deafult=None):
+		out = self.data.pop(key, deafult)
+		self = SuperDict(self.data)
+		return out
+
+	def values():
+		return self.data.values()
 
 
-#with open("table.json", "r") as read_file:
-#    data = json.load(read_file)
+def make_super_dict(name_of_json):
+	'''
+	Название json -> словарь -> SuperDict
 
-#table = SuperDict(data)
+	@ in  : name_of_json
+	@ out : SuperDict object
+	'''
+	with open(name_of_json, "r") as read_file:
+		data = json.load(read_file)
 
-#print(table.criticality[0].count)
-
-'''
-TODO:
-
-- __str__()
-- написать тесты
-
-'''
+	return SuperDict(data)

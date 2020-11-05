@@ -1,6 +1,5 @@
 from SuperDict import make_super_dict
 
-
 person = make_super_dict('test.json')
 
 #можно обращаться по разному
@@ -16,3 +15,20 @@ print(person)
 
 tbl = make_super_dict('table.json')
 print(tbl.table[0].spare.name)
+print(tbl)
+
+print(tbl)
+
+
+print('********KEYS*********')
+print(tbl.table[0].keys())
+
+print('********ITEMS*********')
+print(tbl.table[0].items())
+
+print('********COPY*********')
+print(tbl.copy())
+
+
+
+tbl.clear()
